@@ -5,6 +5,16 @@ igdb:
   client-id: ${IGDB_CLIENT_ID:}
   client-secret: ${IGDB_CLIENT_SECRET:}
 
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+  success-url: ${STRIPE_SUCCESS_URL:${app.frontend-url}/checkout/success}
+  cancel-url: ${STRIPE_CANCEL_URL:${app.frontend-url}/checkout/cancel}
+
+payment:
+  pending-expiration-minutes: ${PAYMENT_PENDING_EXPIRATION_MINUTES:30}
+  expiration-check-rate-ms: ${PAYMENT_EXPIRATION_CHECK_RATE_MS:900000}
+
 spring:
   application:
     name: new-game-plus
