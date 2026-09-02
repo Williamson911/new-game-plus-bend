@@ -143,7 +143,7 @@ git commit -m "Add stripeSessionId to Order and matching repository queries"
 **Files:**
 - Create: `src/main/java/be/technifutur/newgameplus/payment/StripeClient.java`
 
-- [ ] **Step 1: Write the client**
+- [x] **Step 1: Write the client**
 
 ```java
 package be.technifutur.newgameplus.payment;
@@ -213,17 +213,19 @@ public class StripeClient {
 }
 ```
 
-- [ ] **Step 2: Verify the project builds**
+- [x] **Step 2: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/payment/StripeClient.java
 git commit -m "Add StripeClient for creating Checkout Sessions"
 ```
+
+*(Follow-up fix commit `96a0359`: rounding safety in `unitAmount` conversion + Javadoc documenting the `@Transactional`/`rollbackFor` contract, per code-quality review.)*
 
 ---
 
