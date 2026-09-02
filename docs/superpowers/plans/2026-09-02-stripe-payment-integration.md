@@ -585,7 +585,7 @@ git commit -m "Create a Stripe Checkout Session on order checkout"
 **Files:**
 - Modify: `src/main/java/be/technifutur/newgameplus/controller/OrderController.java`
 
-- [ ] **Step 1: Update `assertValidTransition`**
+- [x] **Step 1: Update `assertValidTransition`**
 
 Find:
 
@@ -613,12 +613,12 @@ Replace with:
 
 (`PENDING → PAID` is removed: only the Stripe webhook, via direct repository access, may make that transition now.)
 
-- [ ] **Step 2: Verify the project builds**
+- [x] **Step 2: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 3: Live test — manual PAID transition is rejected**
+- [ ] **Step 3: Live test — manual PAID transition is rejected** *(pending — waiting on a Stripe test-mode secret key from the user)*
 
 With the app still running from Task 5, reload the order id and seller token saved to disk in that task's Step 4:
 
@@ -635,7 +635,7 @@ try {
 
 Expected: `expected fail: Conflict` (409).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/controller/OrderController.java
