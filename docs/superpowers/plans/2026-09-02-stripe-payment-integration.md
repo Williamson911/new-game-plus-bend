@@ -31,7 +31,7 @@ These become environment variables passed to the app at launch:
 - Modify: `pom.xml`
 - Modify: `src/main/resources/application.yaml`
 
-- [ ] **Step 1: Add the `stripe-java` dependency**
+- [x] **Step 1: Add the `stripe-java` dependency**
 
 In `pom.xml`, inside the existing `<dependencies>` block, add (right after the `postgresql` dependency, before `lombok`):
 
@@ -45,7 +45,7 @@ In `pom.xml`, inside the existing `<dependencies>` block, add (right after the `
 
 If Maven can't resolve `29.4.0` (Stripe releases often), check https://mvnrepository.com/artifact/com.stripe/stripe-java for the current latest `29.x`/`30.x` version and use that instead — this is the only version-pin in the plan expected to need adjustment.
 
-- [ ] **Step 2: Add Stripe and scheduler configuration**
+- [x] **Step 2: Add Stripe and scheduler configuration**
 
 In `src/main/resources/application.yaml`, add two new top-level sections (after the existing `igdb:` block, before `spring:`):
 
@@ -63,7 +63,7 @@ payment:
 
 `payment.pending-expiration-minutes` and `payment.expiration-check-rate-ms` are overridable via env vars specifically so Task 8's live test can use short values (minutes/seconds) instead of waiting on the real 30-minute/15-minute production defaults.
 
-- [ ] **Step 3: Verify the project still builds**
+- [x] **Step 3: Verify the project still builds**
 
 Run via IntelliJ (this resolves the new dependency through the IDE's own Maven infra, which has previously succeeded where sandboxed `mvn` hit certificate errors on fresh downloads):
 
@@ -71,7 +71,7 @@ Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\
 
 Expected: build succeeds, no errors. If it fails with a dependency resolution error, revisit the version in Step 1.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add pom.xml src/main/resources/application.yaml
