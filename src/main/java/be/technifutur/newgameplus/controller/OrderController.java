@@ -2,10 +2,13 @@ package be.technifutur.newgameplus.controller;
 
 import be.technifutur.newgameplus.dto.request.CheckoutRequest;
 import be.technifutur.newgameplus.dto.request.UpdateOrderStatusRequest;
+import be.technifutur.newgameplus.dto.response.CheckoutResponse;
 import be.technifutur.newgameplus.dto.response.OrderResponse;
 import be.technifutur.newgameplus.entities.*;
+import be.technifutur.newgameplus.payment.StripeClient;
 import be.technifutur.newgameplus.repositories.*;
 import be.technifutur.newgameplus.security.JwtUtils;
+import com.stripe.exception.StripeException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +39,7 @@ public class OrderController {
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
+    private final StripeClient stripeClient;
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> myOrders(
@@ -137,7 +142,7 @@ public class OrderController {
 
     @PostMapping("/checkout")
     @Transactional
-    public ResponseEntity<List<OrderResponse>> checkout(
+    public ResponseEntity<CheckoutResponse> checkout(
             @Valid @RequestBody CheckoutRequest request,
             @AuthenticationPrincipal JwtUtils.UserSession session
     ) {
@@ -162,16 +167,35 @@ public class OrderController {
         Map<Shop, List<CartItem>> itemsByShop = cartItems.stream()
                 .collect(Collectors.groupingBy(item -> item.getListing().getShop()));
 
-        List<OrderResponse> responses = itemsByShop.entrySet().stream()
-                .map(entry -> createOrderForShop(buyer, entry.getKey(), entry.getValue(), request))
-                .toList();
+        List<Order> createdOrders = new ArrayList<>();
+        List<OrderItem> allItems = new ArrayList<>();
+        List<OrderResponse> responses = new ArrayList<>();
+
+        for (Map.Entry<Shop, List<CartItem>> entry : itemsByShop.entrySet()) {
+            OrderWithItems result = createOrderForShop(buyer, entry.getKey(), entry.getValue(), request);
+            createdOrders.add(result.order());
+            allItems.addAll(result.items());
+            responses.add(OrderResponse.fromOrder(result.order(), result.items()));
+        }
 
         cartItemRepository.deleteByCartId(cart.getId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responses);
+        StripeClient.CheckoutSession checkoutSession;
+        try {
+            checkoutSession = stripeClient.createCheckoutSession(allItems);
+        } catch (StripeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Erreur lors de la création du paiement Stripe");
+        }
+
+        for (Order order : createdOrders) {
+            order.setStripeSessionId(checkoutSession.id());
+            orderRepository.save(order);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CheckoutResponse(responses, checkoutSession.url()));
     }
 
-    private OrderResponse createOrderForShop(User buyer, Shop shop, List<CartItem> items, CheckoutRequest request) {
+    private OrderWithItems createOrderForShop(User buyer, Shop shop, List<CartItem> items, CheckoutRequest request) {
         Order order = new Order();
         order.setBuyer(buyer);
         order.setShop(shop);
@@ -194,6 +218,9 @@ public class OrderController {
             return orderItem;
         }).toList();
 
-        return OrderResponse.fromOrder(savedOrder, orderItems);
+        return new OrderWithItems(savedOrder, orderItems);
+    }
+
+    private record OrderWithItems(Order order, List<OrderItem> items) {
     }
 }
