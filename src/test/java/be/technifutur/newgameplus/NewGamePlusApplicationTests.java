@@ -1,0 +1,13 @@
+package be.technifutur.newgameplus;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class NewGamePlusApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
