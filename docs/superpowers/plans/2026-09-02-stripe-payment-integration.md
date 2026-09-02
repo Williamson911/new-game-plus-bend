@@ -821,7 +821,7 @@ git commit -m "Add Stripe webhook to confirm payment and mark orders PAID"
 - Modify: `src/main/java/be/technifutur/newgameplus/NewGamePlusApplication.java`
 - Create: `src/main/java/be/technifutur/newgameplus/payment/PaymentScheduler.java`
 
-- [ ] **Step 1: Enable scheduling**
+- [x] **Step 1: Enable scheduling**
 
 In `NewGamePlusApplication.java`, replace the full file with:
 
@@ -843,7 +843,7 @@ public class NewGamePlusApplication {
 }
 ```
 
-- [ ] **Step 2: Write the scheduler**
+- [x] **Step 2: Write the scheduler**
 
 ```java
 package be.technifutur.newgameplus.payment;
@@ -899,12 +899,12 @@ public class PaymentScheduler {
 }
 ```
 
-- [ ] **Step 3: Verify the project builds**
+- [x] **Step 3: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 4: Live test — stale order gets auto-cancelled**
+- [ ] **Step 4: Live test — stale order gets auto-cancelled** *(pending — waiting on Stripe test-mode credentials from the user)*
 
 Launch with a short expiration window so the test doesn't take 30 real minutes:
 
@@ -964,12 +964,14 @@ Expected: order `status = CANCELLED`, listing `status = AVAILABLE`.
 
 Stop the app afterward (`Stop-Process` on its PID, as done throughout this project's testing).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/NewGamePlusApplication.java src/main/java/be/technifutur/newgameplus/payment/PaymentScheduler.java
 git commit -m "Auto-cancel abandoned PENDING orders and release their listings"
 ```
+
+*(Follow-up fix commit `ffc1c9f`: aligned the Stripe Checkout Session's `expires_at` with `payment.pending-expiration-minutes` so Stripe itself refuses late payments once the app considers an order abandoned, and added a `@Version` field to `Order` for optimistic-locking protection against a scheduler/webhook race — per code-quality review.)*
 
 ---
 
