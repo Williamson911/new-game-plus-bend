@@ -9,7 +9,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Component
@@ -29,6 +29,11 @@ public class StripeClient {
         Stripe.apiKey = secretKey;
     }
 
+    /**
+     * Throws a checked {@link StripeException}. Callers inside a {@code @Transactional}
+     * method must translate this to an unchecked exception (or use {@code rollbackFor})
+     * — otherwise a failed Stripe call will not roll back the transaction.
+     */
     public CheckoutSession createCheckoutSession(List<OrderItem> items) throws StripeException {
         SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -36,7 +41,10 @@ public class StripeClient {
                 .setCancelUrl(cancelUrl);
 
         for (OrderItem item : items) {
-            long unitAmount = item.getPrice().multiply(BigDecimal.valueOf(100)).longValueExact();
+            long unitAmount = item.getPrice()
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .movePointRight(2)
+                    .longValueExact();
 
             paramsBuilder.addLineItem(
                     SessionCreateParams.LineItem.builder()
