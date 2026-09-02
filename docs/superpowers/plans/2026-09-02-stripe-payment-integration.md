@@ -267,7 +267,7 @@ git commit -m "Add CheckoutResponse DTO"
 **Files:**
 - Modify: `src/main/java/be/technifutur/newgameplus/controller/OrderController.java`
 
-- [ ] **Step 1: Update imports and fields**
+- [x] **Step 1: Update imports and fields**
 
 Find this import block at the top of `OrderController.java`:
 
@@ -350,7 +350,7 @@ Replace with:
     private final StripeClient stripeClient;
 ```
 
-- [ ] **Step 2: Replace `checkout()` and `createOrderForShop()`**
+- [x] **Step 2: Replace `checkout()` and `createOrderForShop()`**
 
 Find this whole block (the `checkout` method through the end of `createOrderForShop`):
 
@@ -510,12 +510,12 @@ Replace it with:
 
 Note: a checked `StripeException` thrown from `createCheckoutSession` is wrapped into a `ResponseStatusException` (unchecked), so Spring's default `@Transactional` rollback rule (rollback on unchecked exceptions) still rolls back all the `Order`/`OrderItem`/`Listing` changes made earlier in the method — no extra `rollbackFor` needed.
 
-- [ ] **Step 3: Verify the project builds**
+- [x] **Step 3: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 4: Live test — checkout returns a Stripe checkout URL**
+- [ ] **Step 4: Live test — checkout returns a Stripe checkout URL** *(pending — waiting on a Stripe test-mode secret key from the user)*
 
 Launch the app with the Stripe test key from Prerequisites:
 
@@ -571,7 +571,7 @@ $env:PGPASSWORD = "postgres"
 
 Expected: `stripe_session_id` matches `$sessionId`, `status = PENDING`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/controller/OrderController.java
