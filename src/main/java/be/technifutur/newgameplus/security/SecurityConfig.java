@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(r -> r
                         .requestMatchers("/error", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/payments/webhook").permitAll()
                         .requestMatchers(HttpMethod.GET, "/games/**", "/genres/**", "/listings/**", "/reviews/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
