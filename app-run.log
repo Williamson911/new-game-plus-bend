@@ -1,0 +1,55 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< be.technifutur:new-game-plus >--------------------
+[INFO] Building new-game-plus 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ new-game-plus >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ new-game-plus ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ new-game-plus ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ new-game-plus ---
+[INFO] skip non existing resourceDirectory C:\Users\lemet\Documents\Technifutur\new-game-plus\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ new-game-plus ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.1.1:run (default-cli) < test-compile @ new-game-plus <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.1:run (default-cli) @ new-game-plus ---
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-buildpack-platform/4.1.1/spring-boot-buildpack-platform-4.1.1.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/5.6.4/httpclient5-5.6.4.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/5.4.3/httpcore5-5.4.3.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5-h2/5.4.3/httpcore5-h2-5.4.3.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-loader-tools/4.1.1/spring-boot-loader-tools-4.1.1.jar
+Downloading from central: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-observation/1.16.7/micrometer-observation-1.16.7.jar
+Downloading from central: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/1.16.7/micrometer-commons-1.16.7.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.977 s
+[INFO] Finished at: 2026-09-02T16:45:32+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.1.1:run (default-cli) on project new-game-plus: Execution default-cli of goal org.springframework.boot:spring-boot-maven-plugin:4.1.1:run failed: Plugin org.springframework.boot:spring-boot-maven-plugin:4.1.1 or one of its dependencies could not be resolved:
+[ERROR] 	Could not transfer artifact org.springframework.boot:spring-boot-buildpack-platform:jar:4.1.1 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact org.apache.httpcomponents.client5:httpclient5:jar:5.6.4 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact org.apache.httpcomponents.core5:httpcore5:jar:5.4.3 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact org.apache.httpcomponents.core5:httpcore5-h2:jar:5.4.3 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact org.springframework.boot:spring-boot-loader-tools:jar:4.1.1 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact io.micrometer:micrometer-observation:jar:1.16.7 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 	Could not transfer artifact io.micrometer:micrometer-commons:jar:1.16.7 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException

@@ -56,8 +56,14 @@ public class SecurityConfig {
                         (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
                 ))
                 .authorizeHttpRequests(r -> r
+                        .requestMatchers("/error", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/**", "/genres/**", "/listings/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/games/**", "/genres/**", "/listings/**", "/reviews/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -6,6 +6,7 @@ import be.technifutur.newgameplus.entities.Game;
 import be.technifutur.newgameplus.entities.Genre;
 import be.technifutur.newgameplus.repositories.GameRepository;
 import be.technifutur.newgameplus.repositories.GenreRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
+@Tag(name = "Games", description = "Catalogue des jeux")
 public class GameController {
 
     private final GameRepository gameRepository;

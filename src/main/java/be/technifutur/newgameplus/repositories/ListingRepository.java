@@ -2,6 +2,8 @@ package be.technifutur.newgameplus.repositories;
 
 import be.technifutur.newgameplus.entities.Listing;
 import be.technifutur.newgameplus.entities.ListingStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -13,9 +15,9 @@ import java.util.UUID;
 public interface ListingRepository extends JpaRepository<Listing, UUID>,
         JpaSpecificationExecutor<Listing> {
 
-    List<Listing> findByStatus(ListingStatus status);
+    Page<Listing> findByStatus(ListingStatus status, Pageable pageable);
 
-    List<Listing> findBySellerId(UUID sellerId);
+    List<Listing> findByShopId(UUID shopId);
 
     List<Listing> findByGameId(UUID gameId);
 }

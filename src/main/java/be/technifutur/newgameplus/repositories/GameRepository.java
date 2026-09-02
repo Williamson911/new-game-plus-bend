@@ -17,6 +17,8 @@ public interface GameRepository extends JpaRepository<Game, UUID>,
 
     Page<Game> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    boolean existsByGenresId(UUID genreId);
+
     @Query("select count(g) > 0 from Game g where g.name ilike :name")
     boolean existsByName(@Param("name") String name);
 

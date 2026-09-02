@@ -26,7 +26,7 @@ public class Game {
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 2000)
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -49,7 +49,7 @@ public class Game {
     @Column(nullable = false)
     private LocalDate releaseDate;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 500)
     private String coverURL;
 
     @Column(nullable = false, unique = true, length = 50)

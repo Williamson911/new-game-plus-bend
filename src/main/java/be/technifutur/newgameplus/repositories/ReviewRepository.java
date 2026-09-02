@@ -12,10 +12,12 @@ import java.util.UUID;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
-    List<Review> findBySellerId(UUID sellerId);
+    List<Review> findByShopId(UUID shopId);
 
     boolean existsByOrderId(UUID orderId);
 
-    @Query("select avg(r.rating) from Review r where r.seller.id = :sellerId")
-    Double findAverageRatingBySellerId(@Param("sellerId") UUID sellerId);
+    boolean existsByAuthorId(UUID authorId);
+
+    @Query("select avg(r.rating) from Review r where r.shop.id = :shopId")
+    Double findAverageRatingByShopId(@Param("shopId") UUID shopId);
 }

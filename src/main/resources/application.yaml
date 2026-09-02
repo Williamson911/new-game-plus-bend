@@ -1,3 +1,33 @@
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+
+igdb:
+  client-id: ${IGDB_CLIENT_ID:}
+  client-secret: ${IGDB_CLIENT_SECRET:}
+
 spring:
   application:
     name: new-game-plus
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/new_game_plus}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: public
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:william.williamson.91@gmail.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
