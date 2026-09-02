@@ -37,6 +37,9 @@ public class Order {
     @Embedded
     private Address shippingAddress;
 
+    @Column(name = "stripe_session_id")
+    private String stripeSessionId;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
