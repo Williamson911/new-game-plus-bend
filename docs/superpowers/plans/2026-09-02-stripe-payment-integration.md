@@ -86,7 +86,7 @@ git commit -m "Add Stripe SDK dependency and payment configuration"
 - Modify: `src/main/java/be/technifutur/newgameplus/entities/Order.java`
 - Modify: `src/main/java/be/technifutur/newgameplus/repositories/OrderRepository.java`
 
-- [ ] **Step 1: Add the `stripeSessionId` field**
+- [x] **Step 1: Add the `stripeSessionId` field**
 
 In `Order.java`, add this field right after `shippingAddress` and before `createdAt`:
 
@@ -95,7 +95,7 @@ In `Order.java`, add this field right after `shippingAddress` and before `create
     private String stripeSessionId;
 ```
 
-- [ ] **Step 2: Add repository lookups**
+- [x] **Step 2: Add repository lookups**
 
 Replace the full contents of `OrderRepository.java` with:
 
@@ -124,12 +124,12 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 }
 ```
 
-- [ ] **Step 3: Verify the project builds**
+- [x] **Step 3: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds (Hibernate will add the `stripe_session_id` column automatically on next app start, via `ddl-auto: update`).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/entities/Order.java src/main/java/be/technifutur/newgameplus/repositories/OrderRepository.java
