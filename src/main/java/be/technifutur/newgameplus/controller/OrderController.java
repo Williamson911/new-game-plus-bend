@@ -128,7 +128,7 @@ public class OrderController {
 
     private void assertValidTransition(OrderStatus current, OrderStatus next) {
         boolean allowed = switch (current) {
-            case PENDING -> next == OrderStatus.PAID || next == OrderStatus.CANCELLED;
+            case PENDING -> next == OrderStatus.CANCELLED;
             case PAID -> next == OrderStatus.SHIPPED || next == OrderStatus.CANCELLED;
             case SHIPPED -> next == OrderStatus.DELIVERED || next == OrderStatus.CANCELLED;
             case DELIVERED, CANCELLED -> false;
