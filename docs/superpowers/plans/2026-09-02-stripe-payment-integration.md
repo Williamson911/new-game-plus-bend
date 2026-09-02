@@ -650,7 +650,7 @@ git commit -m "Block manual PENDING to PAID transition, Stripe webhook is now th
 - Create: `src/main/java/be/technifutur/newgameplus/payment/PaymentController.java`
 - Modify: `src/main/java/be/technifutur/newgameplus/security/SecurityConfig.java`
 
-- [ ] **Step 1: Write the webhook controller**
+- [x] **Step 1: Write the webhook controller**
 
 ```java
 package be.technifutur.newgameplus.payment;
@@ -728,7 +728,7 @@ public class PaymentController {
 }
 ```
 
-- [ ] **Step 2: Allow unauthenticated access to the webhook**
+- [x] **Step 2: Allow unauthenticated access to the webhook**
 
 In `SecurityConfig.java`, find:
 
@@ -745,12 +745,12 @@ Replace with:
                         .requestMatchers("/payments/webhook").permitAll()
 ```
 
-- [ ] **Step 3: Verify the project builds**
+- [x] **Step 3: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 4: Live test — webhook confirms payment**
+- [ ] **Step 4: Live test — webhook confirms payment** *(pending — waiting on Stripe test-mode credentials from the user)*
 
 App still running with `STRIPE_WEBHOOK_SECRET=whsec_local_dev_secret` (from Task 5's launch). Reload the session id saved to disk in Task 5's Step 4:
 
@@ -778,13 +778,13 @@ $env:PGPASSWORD = "postgres"
 
 Expected: `status = PAID` for every order sharing that session.
 
-- [ ] **Step 5: Live test — idempotent replay**
+- [ ] **Step 5: Live test — idempotent replay** *(pending — same as Step 4)*
 
 Re-run the exact same PowerShell block from Step 4 (same `$timestamp`/`$payload`/`$sigHeader` — or regenerate, doesn't matter as long as `data.object.id` is the same session).
 
 Expected: `200 OK` again, order stays `PAID` (no error, no duplicate side effects — confirm via the same `psql` query, status still `PAID`).
 
-- [ ] **Step 6: Live test — unknown session and bad signature**
+- [ ] **Step 6: Live test — unknown session and bad signature** *(pending — same as Step 4)*
 
 ```powershell
 # Unknown session id
@@ -804,12 +804,14 @@ try {
 
 Expected: first call → `200 OK` (logged as a warning server-side, order state unaffected since the session doesn't exist). Second call → `expected fail: BadRequest` (400).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/payment/PaymentController.java src/main/java/be/technifutur/newgameplus/security/SecurityConfig.java
 git commit -m "Add Stripe webhook to confirm payment and mark orders PAID"
 ```
+
+*(Follow-up fix commit `022b34b`: read the webhook body explicitly as UTF-8 instead of relying on Spring's default charset, and fail fast at startup if `stripe.webhook-secret` is blank, per code-quality review.)*
 
 ---
 
