@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -24,6 +25,9 @@ public class StripeClient {
     @Value("${stripe.cancel-url}")
     private String cancelUrl;
 
+    @Value("${payment.pending-expiration-minutes}")
+    private long pendingExpirationMinutes;
+
     @PostConstruct
     public void init() {
         Stripe.apiKey = secretKey;
@@ -35,10 +39,14 @@ public class StripeClient {
      * — otherwise a failed Stripe call will not roll back the transaction.
      */
     public CheckoutSession createCheckoutSession(List<OrderItem> items) throws StripeException {
+        long expiresInMinutes = Math.max(30, Math.min(pendingExpirationMinutes, 1440));
+        long expiresAt = Instant.now().plusSeconds(expiresInMinutes * 60).getEpochSecond();
+
         SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl(successUrl)
-                .setCancelUrl(cancelUrl);
+                .setCancelUrl(cancelUrl)
+                .setExpiresAt(expiresAt);
 
         for (OrderItem item : items) {
             long unitAmount = item.getPrice()

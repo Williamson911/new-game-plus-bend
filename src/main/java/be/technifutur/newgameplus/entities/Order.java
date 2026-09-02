@@ -43,4 +43,7 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Version
+    private Long version;
+
 }
