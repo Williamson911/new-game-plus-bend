@@ -37,9 +37,9 @@ public class PaymentController {
     private String webhookSecret;
 
     @PostConstruct
-    public void validateWebhookSecret() {
+    public void warnIfWebhookSecretMissing() {
         if (webhookSecret == null || webhookSecret.isBlank()) {
-            throw new IllegalStateException("stripe.webhook-secret must be configured (set STRIPE_WEBHOOK_SECRET) for the payment webhook to function");
+            log.warn("stripe.webhook-secret n'est pas configuré (STRIPE_WEBHOOK_SECRET) — le webhook Stripe échouera tant que ce n'est pas défini");
         }
     }
 
@@ -48,6 +48,11 @@ public class PaymentController {
             HttpServletRequest request,
             @RequestHeader("Stripe-Signature") String signature
     ) throws IOException {
+        if (webhookSecret == null || webhookSecret.isBlank()) {
+            log.error("Webhook Stripe reçu mais stripe.webhook-secret n'est pas configuré");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
         String payload = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
         Event event;

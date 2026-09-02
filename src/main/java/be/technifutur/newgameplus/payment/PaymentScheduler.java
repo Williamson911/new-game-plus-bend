@@ -33,7 +33,8 @@ public class PaymentScheduler {
     @Scheduled(fixedRateString = "${payment.expiration-check-rate-ms}")
     @Transactional
     public void cancelStalePendingOrders() {
-        LocalDateTime cutoff = LocalDateTime.now().minusMinutes(expirationMinutes);
+        long effectiveExpirationMinutes = Math.max(30, Math.min(expirationMinutes, 1440));
+        LocalDateTime cutoff = LocalDateTime.now().minusMinutes(effectiveExpirationMinutes);
         List<Order> staleOrders = orderRepository.findByStatusAndCreatedAtBefore(OrderStatus.PENDING, cutoff);
 
         for (Order order : staleOrders) {
@@ -45,7 +46,7 @@ public class PaymentScheduler {
             }
             order.setStatus(OrderStatus.CANCELLED);
             orderRepository.save(order);
-            log.info("Commande {} annulée automatiquement (PENDING depuis plus de {} min)", order.getId(), expirationMinutes);
+            log.info("Commande {} annulée automatiquement (PENDING depuis plus de {} min)", order.getId(), effectiveExpirationMinutes);
         }
     }
 }
