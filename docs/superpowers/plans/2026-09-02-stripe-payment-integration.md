@@ -234,7 +234,7 @@ git commit -m "Add StripeClient for creating Checkout Sessions"
 **Files:**
 - Create: `src/main/java/be/technifutur/newgameplus/dto/response/CheckoutResponse.java`
 
-- [ ] **Step 1: Write the DTO**
+- [x] **Step 1: Write the DTO**
 
 ```java
 package be.technifutur.newgameplus.dto.response;
@@ -248,12 +248,12 @@ public record CheckoutResponse(
 }
 ```
 
-- [ ] **Step 2: Verify the project builds**
+- [x] **Step 2: Verify the project builds**
 
 Use `mcp__idea__build_project` with `projectPath: "C:\\Users\\lemet\\Documents\\Technifutur\\new-game-plus"`.
 Expected: build succeeds.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/main/java/be/technifutur/newgameplus/dto/response/CheckoutResponse.java
