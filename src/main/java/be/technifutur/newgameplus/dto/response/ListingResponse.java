@@ -13,6 +13,7 @@ public record ListingResponse(
         String shopName,
         BigDecimal price,
         ListingStatus status,
+        boolean featured,
         List<String> imageUrls
 ) {
     public static ListingResponse fromListing(Listing listing, List<String> imageUrls) {
@@ -22,6 +23,7 @@ public record ListingResponse(
                 listing.getShop().getName(),
                 listing.getPrice(),
                 listing.getStatus(),
+                listing.isFeatured(),
                 imageUrls
         );
     }

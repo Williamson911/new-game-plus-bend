@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,10 @@ public interface ListingRepository extends JpaRepository<Listing, UUID>,
         JpaSpecificationExecutor<Listing> {
 
     Page<Listing> findByStatus(ListingStatus status, Pageable pageable);
+
+    Page<Listing> findByStatusAndPriceLessThanEqual(ListingStatus status, BigDecimal maxPrice, Pageable pageable);
+
+    Page<Listing> findByStatusAndFeaturedTrue(ListingStatus status, Pageable pageable);
 
     List<Listing> findByShopId(UUID shopId);
 

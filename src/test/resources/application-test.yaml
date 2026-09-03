@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:new_game_plus_test;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS public
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_schema: public
+    show-sql: false
+
+listing:
+  cheap-price-threshold: 15

@@ -2,9 +2,11 @@ package be.technifutur.newgameplus.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -36,4 +38,11 @@ public class Listing {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ListingStatus status = ListingStatus.AVAILABLE;
+
+    @Column(nullable = false, columnDefinition = "boolean not null default false")
+    private boolean featured = false;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 }

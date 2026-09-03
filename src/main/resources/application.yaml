@@ -11,6 +11,9 @@ stripe:
   success-url: ${STRIPE_SUCCESS_URL:${app.frontend-url}/checkout/success}
   cancel-url: ${STRIPE_CANCEL_URL:${app.frontend-url}/checkout/cancel}
 
+listing:
+  cheap-price-threshold: ${LISTING_CHEAP_PRICE_THRESHOLD:15}
+
 payment:
   pending-expiration-minutes: ${PAYMENT_PENDING_EXPIRATION_MINUTES:30}
   expiration-check-rate-ms: ${PAYMENT_EXPIRATION_CHECK_RATE_MS:900000}

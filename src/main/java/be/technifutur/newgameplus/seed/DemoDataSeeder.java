@@ -6,6 +6,7 @@ import be.technifutur.newgameplus.igdb.IgdbGame;
 import be.technifutur.newgameplus.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Order(2)
+@Profile("!test")
 public class DemoDataSeeder implements CommandLineRunner {
 
     private final GenreRepository genreRepository;
@@ -114,7 +116,9 @@ public class DemoDataSeeder implements CommandLineRunner {
         shopRepository.save(shop);
 
         createListing(shop, zelda, new BigDecimal("39.90"));
-        createListing(shop, eldenRing, new BigDecimal("49.90"));
+        Listing eldenRingListing = createListing(shop, eldenRing, new BigDecimal("49.90"));
+        eldenRingListing.setFeatured(true);
+        listingRepository.save(eldenRingListing);
         createListing(shop, haloInfinite, new BigDecimal("19.90"));
         createListing(shop, celeste, new BigDecimal("14.90"));
         createListing(shop, civ6, new BigDecimal("24.90"));
@@ -139,11 +143,11 @@ public class DemoDataSeeder implements CommandLineRunner {
         return gameRepository.save(game);
     }
 
-    private void createListing(Shop shop, Game game, BigDecimal price) {
+    private Listing createListing(Shop shop, Game game, BigDecimal price) {
         Listing listing = new Listing();
         listing.setShop(shop);
         listing.setGame(game);
         listing.setPrice(price);
-        listingRepository.save(listing);
+        return listingRepository.save(listing);
     }
 }

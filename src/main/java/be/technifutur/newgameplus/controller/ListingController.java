@@ -1,5 +1,6 @@
 package be.technifutur.newgameplus.controller;
 
+import be.technifutur.newgameplus.dto.request.FeaturedRequest;
 import be.technifutur.newgameplus.dto.request.ListingRequest;
 import be.technifutur.newgameplus.dto.response.ListingResponse;
 import be.technifutur.newgameplus.entities.Game;
@@ -16,8 +17,11 @@ import be.technifutur.newgameplus.security.JwtUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +39,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Tag(name = "Listings", description = "Annonces de jeux d'occasion")
 public class ListingController {
+
+    private static final int DEFAULT_LIMIT = 8;
+    private static final int MAX_LIMIT = 50;
+
+    @Value("${listing.cheap-price-threshold}")
+    private BigDecimal cheapPriceThreshold;
 
     private final ListingRepository listingRepository;
     private final ListingImageRepository listingImageRepository;
@@ -45,6 +56,44 @@ public class ListingController {
     public ResponseEntity<Page<ListingResponse>> findAll(Pageable pageable) {
         Page<Listing> listings = listingRepository.findByStatus(ListingStatus.AVAILABLE, pageable);
         return ResponseEntity.ok(listings.map(this::toResponse));
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<List<ListingResponse>> findLatest(
+            @RequestParam(defaultValue = "" + DEFAULT_LIMIT) int limit
+    ) {
+        int size = Math.max(1, Math.min(limit, MAX_LIMIT));
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<ListingResponse> listings = listingRepository.findByStatus(ListingStatus.AVAILABLE, pageable)
+                .map(this::toResponse)
+                .getContent();
+        return ResponseEntity.ok(listings);
+    }
+
+    @GetMapping("/cheap")
+    public ResponseEntity<List<ListingResponse>> findCheap(
+            @RequestParam(defaultValue = "" + DEFAULT_LIMIT) int limit
+    ) {
+        int size = Math.max(1, Math.min(limit, MAX_LIMIT));
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.ASC, "price"));
+        List<ListingResponse> listings = listingRepository
+                .findByStatusAndPriceLessThanEqual(ListingStatus.AVAILABLE, cheapPriceThreshold, pageable)
+                .map(this::toResponse)
+                .getContent();
+        return ResponseEntity.ok(listings);
+    }
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<ListingResponse>> findFeatured(
+            @RequestParam(defaultValue = "" + DEFAULT_LIMIT) int limit
+    ) {
+        int size = Math.max(1, Math.min(limit, MAX_LIMIT));
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<ListingResponse> listings = listingRepository
+                .findByStatusAndFeaturedTrue(ListingStatus.AVAILABLE, pageable)
+                .map(this::toResponse)
+                .getContent();
+        return ResponseEntity.ok(listings);
     }
 
     @GetMapping("/{id}")
@@ -87,6 +136,21 @@ public class ListingController {
         assertOwnedBySession(listing, session);
 
         listing.setPrice(request.price());
+        listingRepository.save(listing);
+
+        return ResponseEntity.ok(toResponse(listing));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/featured")
+    public ResponseEntity<ListingResponse> setFeatured(
+            @PathVariable UUID id,
+            @Valid @RequestBody FeaturedRequest request
+    ) {
+        Listing listing = listingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing introuvable"));
+
+        listing.setFeatured(request.featured());
         listingRepository.save(listing);
 
         return ResponseEntity.ok(toResponse(listing));
