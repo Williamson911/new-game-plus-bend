@@ -1,6 +1,7 @@
 package be.technifutur.newgameplus.dto.request;
 
 import be.technifutur.newgameplus.entities.Game;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,8 @@ public record GameRequest(
         @NotBlank String platform,
         @NotNull LocalDate releaseDate,
         String coverURL,
-        String igdbID
+        String igdbID,
+        @Min(1) int weightGrams
 ) {
     public Game toGame() {
         Game game = new Game();
@@ -30,6 +32,7 @@ public record GameRequest(
         game.setReleaseDate(releaseDate);
         game.setCoverURL(coverURL);
         game.setIgdbID(igdbID);
+        game.setWeightGrams(weightGrams);
         return game;
     }
 }

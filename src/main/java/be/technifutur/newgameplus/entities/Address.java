@@ -13,19 +13,14 @@ import lombok.*;
 @Setter
 public class Address {
 
-    @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
     private String street;
 
-    @Column(nullable = false)
     private String streetNumber;
 
-    @Column(nullable = false)
     private String postCode;
 
-    @Column(nullable = false)
     private String country;
 
 }

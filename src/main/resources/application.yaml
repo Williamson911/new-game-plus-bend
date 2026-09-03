@@ -14,6 +14,10 @@ stripe:
 listing:
   cheap-price-threshold: ${LISTING_CHEAP_PRICE_THRESHOLD:15}
 
+mondialrelay:
+  enseigne: ${MONDIALRELAY_ENSEIGNE:BDTEST13}
+  private-key: ${MONDIALRELAY_PRIVATE_KEY:TestAPI1key}
+
 payment:
   pending-expiration-minutes: ${PAYMENT_PENDING_EXPIRATION_MINUTES:30}
   expiration-check-rate-ms: ${PAYMENT_EXPIRATION_CHECK_RATE_MS:900000}

@@ -55,4 +55,7 @@ public class Game {
     @Column(nullable = false, unique = true, length = 50)
     private String igdbID;
 
+    @Column(nullable = false, columnDefinition = "integer not null default 200")
+    private int weightGrams;
+
 }

@@ -50,7 +50,8 @@ public class DemoDataSeeder implements CommandLineRunner {
                 Set.of(adventure, rpg),
                 "Nintendo", "Nintendo EPD", "Nintendo Switch",
                 LocalDate.of(2017, 3, 3),
-                "https://picsum.photos/seed/botw/400/600", "botw-001"
+                "https://picsum.photos/seed/botw/400/600", "botw-001",
+                120
         );
 
         Game eldenRing = createGame(
@@ -59,7 +60,8 @@ public class DemoDataSeeder implements CommandLineRunner {
                 Set.of(rpg, adventure),
                 "Bandai Namco", "FromSoftware", "PC",
                 LocalDate.of(2022, 2, 25),
-                "https://picsum.photos/seed/eldenring/400/600", "elden-ring-001"
+                "https://picsum.photos/seed/eldenring/400/600", "elden-ring-001",
+                180
         );
 
         Game haloInfinite = createGame(
@@ -68,7 +70,8 @@ public class DemoDataSeeder implements CommandLineRunner {
                 Set.of(fps),
                 "Xbox Game Studios", "343 Industries", "Xbox Series X",
                 LocalDate.of(2021, 12, 8),
-                "https://picsum.photos/seed/haloinfinite/400/600", "halo-infinite-001"
+                "https://picsum.photos/seed/haloinfinite/400/600", "halo-infinite-001",
+                110
         );
 
         Game celeste = createGame(
@@ -77,7 +80,8 @@ public class DemoDataSeeder implements CommandLineRunner {
                 Set.of(platformer),
                 "Maddy Makes Games", "Maddy Makes Games", "PC",
                 LocalDate.of(2018, 1, 25),
-                "https://picsum.photos/seed/celeste/400/600", "celeste-001"
+                "https://picsum.photos/seed/celeste/400/600", "celeste-001",
+                130
         );
 
         Game civ6 = createGame(
@@ -86,7 +90,8 @@ public class DemoDataSeeder implements CommandLineRunner {
                 Set.of(strategy),
                 "2K Games", "Firaxis Games", "PC",
                 LocalDate.of(2016, 10, 21),
-                "https://picsum.photos/seed/civ6/400/600", "civ6-001"
+                "https://picsum.photos/seed/civ6/400/600", "civ6-001",
+                350
         );
 
         Role buyerRole = roleRepository.findByName("BUYER").orElseThrow();
@@ -126,7 +131,8 @@ public class DemoDataSeeder implements CommandLineRunner {
 
     private Game createGame(String name, String fallbackDescription, Set<Genre> genres,
                              String publisher, String developer, String platform,
-                             LocalDate fallbackReleaseDate, String fallbackCoverURL, String fallbackIgdbID) {
+                             LocalDate fallbackReleaseDate, String fallbackCoverURL, String fallbackIgdbID,
+                             int weightGrams) {
         Optional<IgdbGame> igdbGame = igdbClient.searchGame(name);
 
         Game game = new Game();
@@ -140,6 +146,7 @@ public class DemoDataSeeder implements CommandLineRunner {
         game.setReleaseDate(igdbGame.map(IgdbGame::releaseDate).orElse(fallbackReleaseDate));
         game.setCoverURL(igdbGame.map(IgdbGame::coverURL).orElse(fallbackCoverURL));
         game.setIgdbID(igdbGame.map(IgdbGame::igdbId).orElse(fallbackIgdbID));
+        game.setWeightGrams(weightGrams);
         return gameRepository.save(game);
     }
 

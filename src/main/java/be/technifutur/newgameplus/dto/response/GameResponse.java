@@ -16,7 +16,8 @@ public record GameResponse(
         String developer,
         String platform,
         LocalDate releaseDate,
-        String coverURL
+        String coverURL,
+        int weightGrams
 ) {
     public static GameResponse fromGame(Game game) {
         return new GameResponse(
@@ -28,7 +29,8 @@ public record GameResponse(
                 game.getDeveloper(),
                 game.getPlatform(),
                 game.getReleaseDate(),
-                game.getCoverURL()
+                game.getCoverURL(),
+                game.getWeightGrams()
         );
     }
 }

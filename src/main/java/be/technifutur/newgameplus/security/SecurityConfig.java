@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/error", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/payments/webhook").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/**", "/genres/**", "/listings/**", "/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/games/**", "/genres/**", "/listings/**", "/reviews/**", "/shipping/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",

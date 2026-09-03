@@ -8,6 +8,7 @@ import be.technifutur.newgameplus.entities.*;
 import be.technifutur.newgameplus.payment.StripeClient;
 import be.technifutur.newgameplus.repositories.*;
 import be.technifutur.newgameplus.security.JwtUtils;
+import be.technifutur.newgameplus.shipping.ShippingRateCalculator;
 import com.stripe.exception.StripeException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -40,6 +41,7 @@ public class OrderController {
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
     private final StripeClient stripeClient;
+    private final ShippingRateCalculator shippingRateCalculator;
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> myOrders(
@@ -146,6 +148,8 @@ public class OrderController {
             @Valid @RequestBody CheckoutRequest request,
             @AuthenticationPrincipal JwtUtils.UserSession session
     ) {
+        assertValidDeliveryFields(request);
+
         Cart cart = cartRepository.findByBuyerId(session.id())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Panier vide"));
 
@@ -182,7 +186,7 @@ public class OrderController {
 
         StripeClient.CheckoutSession checkoutSession;
         try {
-            checkoutSession = stripeClient.createCheckoutSession(allItems);
+            checkoutSession = stripeClient.createCheckoutSession(allItems, createdOrders);
         } catch (StripeException e) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Erreur lors de la création du paiement Stripe");
         }
@@ -195,12 +199,42 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CheckoutResponse(responses, checkoutSession.url()));
     }
 
+    private void assertValidDeliveryFields(CheckoutRequest request) {
+        if (request.deliveryMode() == DeliveryMode.HOME) {
+            if (isBlank(request.street()) || isBlank(request.streetNumber()) || isBlank(request.postCode())
+                    || isBlank(request.city()) || isBlank(request.country())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adresse de livraison incomplète");
+            }
+        } else {
+            if (isBlank(request.relayPointId()) || isBlank(request.relayPointName()) || isBlank(request.relayPointStreet())
+                    || isBlank(request.relayPointPostCode()) || isBlank(request.relayPointCity()) || isBlank(request.relayPointCountry())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Point relais incomplet");
+            }
+        }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
     private OrderWithItems createOrderForShop(User buyer, Shop shop, List<CartItem> items, CheckoutRequest request) {
         Order order = new Order();
         order.setBuyer(buyer);
         order.setShop(shop);
         order.setStatus(OrderStatus.PENDING);
-        order.setShippingAddress(request.toAddress());
+        order.setDeliveryMode(request.deliveryMode());
+
+        if (request.deliveryMode() == DeliveryMode.HOME) {
+            order.setShippingAddress(request.toAddress());
+        } else {
+            order.setRelayPoint(request.toRelayPoint());
+        }
+
+        int totalWeightGrams = items.stream()
+                .mapToInt(item -> item.getListing().getGame().getWeightGrams())
+                .sum();
+        order.setShippingCost(shippingRateCalculator.calculate(request.deliveryMode(), totalWeightGrams));
+
         Order savedOrder = orderRepository.saveAndFlush(order);
 
         List<OrderItem> orderItems = items.stream().map(cartItem -> {
